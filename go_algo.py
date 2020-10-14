@@ -1,7 +1,3 @@
-class go_algo()
+class go_algo():
 
-
-	def main():
-
-
-	main()
+	pass
