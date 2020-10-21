@@ -49,12 +49,14 @@ def run_game(turns, starting_board, x_score, o_score):
 			tempBoard = ' '.join(map(str,starting_board))
 			idx_to_kill = check_kill(starting_board)
 			print('o-indexes to kill', idx_to_kill)
-			kill(starting_board, x_score, o_score, idx_to_kill)
-			x_score = update_score(starting_board, x_score, o_score, idx_to_kill)[0]
-			o_score = update_score(starting_board, x_score, o_score, idx_to_kill)[1]
 
-			if checkWin(x_score, o_score, alive): 
-				alive = False
+			if len(idx_to_kill) > 0: 
+				kill(starting_board, x_score, o_score, idx_to_kill)
+				x_score = update_score(starting_board, x_score, o_score, idx_to_kill, alive)[0]
+				o_score = update_score(starting_board, x_score, o_score, idx_to_kill, alive)[1]
+				if checkWin(x_score, o_score, alive): 
+					alive = False
+
 			print(f"NEW BOARD: {tempBoard}")
 
 			starting_board = move_o(starting_board)
@@ -62,11 +64,15 @@ def run_game(turns, starting_board, x_score, o_score):
 
 			idx_to_kill = check_kill(starting_board)
 			print('x-indexes to kill', idx_to_kill)
-			kill(starting_board, x_score, o_score, idx_to_kill)
-			x_score = update_score(starting_board, x_score, o_score, idx_to_kill)[0]
-			o_score = update_score(starting_board, x_score, o_score, idx_to_kill)[1]
-			if checkWin(x_score, o_score, alive): 
-				alive = False
+
+
+			if len(idx_to_kill) > 0: 
+				kill(starting_board, x_score, o_score, idx_to_kill)
+				x_score = update_score(starting_board, x_score, o_score, idx_to_kill, alive)[0]
+				o_score = update_score(starting_board, x_score, o_score, idx_to_kill, alive)[1]
+				if checkWin(x_score, o_score, alive): 
+					alive = False
+			
 			print(f"NEW BOARD: {tempBoard}")
 
 			print(f"x-score: {x_score}")
@@ -113,14 +119,16 @@ def check_kill(starting_board):
 					indexes_to_kill.append(j)
 	return indexes_to_kill
 
-def update_score(starting_board, xscore, oscore, idx_to_kill):
+def update_score(starting_board, xscore, oscore, idx_to_kill, alive):
 	if not idx_to_kill: 
 		return xscore, oscore
 	new_points = len(idx_to_kill)
 	kill = starting_board[idx_to_kill[0]]
 	if(kill == 'o'):
 		xscore += new_points
-	else: 
+		if checkWin(xscore, oscore, alive): 
+				alive = False
+	elif kill == 'x': 
 		oscore += new_points
 	return xscore, oscore
 
@@ -136,7 +144,7 @@ def main():
 	strBoard = ' '.join(map(str,starting_board))
 	print("Original Board: ", strBoard)
 	print()
-	turns = 7
+	turns = 8000
 	run_game(turns, starting_board, x_score, o_score)
 
 
